@@ -11,7 +11,7 @@ export default function AdminLogin() {
 
     e.preventDefault();
 
-    const res = await fetch("https://avartya-org-1.onrender.com/api/admin/login", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/login`, {
 
       method: "POST",
 

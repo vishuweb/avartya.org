@@ -10,7 +10,7 @@ export default function ImpactStorySection() {
   useEffect(() => {
     const fetchFeaturedStory = async () => {
       try {
-        const res = await fetch("${process.env.NEXT_PUBLIC_API_URL}/api/impact-stories/featured", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/impact-stories/featured`, {
           cache: "no-store" 
         });
         const data = await res.json();
