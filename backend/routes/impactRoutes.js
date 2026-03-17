@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ImpactStory = require("../models/ImpactStory");
-const upload = require("../middleware/upload");
+const upload = require("../middleware/cloudinaryUpload");
 
 // 1. CREATE STORY
 router.post("/", upload.single("image"), async (req, res) => {
@@ -14,7 +14,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     const story = new ImpactStory({
       title: req.body.title,
       description: req.body.description,
-      image: `/uploads/${req.file.filename}`,
+      image: req.file.path,
       slug: req.body.slug,
       featured: req.body.featured
     });
