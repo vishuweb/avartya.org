@@ -15,7 +15,7 @@ export default function StoryDetailPage() {
   useEffect(() => {
     const fetchStory = async () => {
       try {
-        const res = await fetch(`https://avartya-org-1.onrender.com/api/impact-stories/${slug}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/impact-stories/${slug}`, {
           cache: "no-store",
         });
 
@@ -41,7 +41,7 @@ export default function StoryDetailPage() {
   if (error) return <div className="text-center py-20 text-xl text-red-500">{error}</div>;
   if (!story) return null;
 
-  const imageUrl = `https://avartya-org-1.onrender.com${story.image}`;
+  const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${story.image}`;
 
   return (
     <main className="min-h-screen bg-gray-50 py-16 px-6">
