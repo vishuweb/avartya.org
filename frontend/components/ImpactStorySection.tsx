@@ -10,7 +10,7 @@ export default function ImpactStorySection() {
   useEffect(() => {
     const fetchFeaturedStory = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/impact-stories/featured", {
+        const res = await fetch("https://avartya-org-1.onrender.com/api/impact-stories/featured", {
           cache: "no-store" 
         });
         const data = await res.json();
@@ -29,7 +29,7 @@ export default function ImpactStorySection() {
   if (!story || !story.image) return null;
 
   // CRITICAL: We must add the backend URL to the image path!
-  const imageUrl = `http://localhost:5000${story.image}`;
+  const imageUrl = `https://avartya-org-1.onrender.com${story.image}`;
 
   return (
     <section

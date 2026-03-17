@@ -22,7 +22,7 @@ export default function AdminDashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:5000/api/volunteers", {
+      const res = await fetch("https://avartya-org-1.onrender.com/api/volunteers", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

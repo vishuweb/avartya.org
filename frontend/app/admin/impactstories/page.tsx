@@ -23,7 +23,7 @@ export default function AddImpactStory() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/impact-stories", {
+      const res = await fetch("https://avartya-org-1.onrender.com/api/impact-stories", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`
