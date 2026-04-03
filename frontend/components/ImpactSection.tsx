@@ -156,7 +156,7 @@ export default function ImpactSection() {
   return (
     <section
       ref={sectionRef}
-      className="py-4 lg:py-28"
+      className="py-16 lg:py-28"
       style={{ backgroundColor: "#FFFFFF" }}
     >
       <div className="max-w-7xl mx-auto px-6">

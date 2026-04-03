@@ -1,41 +1,48 @@
 const Admin = require("../models/Admin");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
+// ─── Login Admin ───────────────────────────────────────────
 const loginAdmin = async (req, res) => {
-
   try {
+    const { email, password } = req.body;
 
-    const { name, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
 
-    const admin = await Admin.findOne({ name });
+    const admin = await Admin.findOne({ email: email.toLowerCase().trim() });
 
     if (!admin) {
-      return res.status(400).json({ message: "if you are not admin please ..dont try" });
+      // Generic message prevents user enumeration
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, admin.password);
 
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid password" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const token = jwt.sign(
-      { id: admin._id },
-      "secretkey",
-      { expiresIn: "1d" }
+      { id: admin._id, email: admin.email, role: "admin" },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
     );
 
     res.json({
       message: "Login successful",
-      token
+      token,
+      admin: {
+        id: admin._id,
+        name: admin.name,
+        email: admin.email,
+      },
     });
-
   } catch (error) {
-
-    res.status(500).json({ message: error.message });
-
+    console.error("[Admin Login Error]", error.message);
+    res.status(500).json({ message: "Server error during authentication" });
   }
-
 };
 
 module.exports = { loginAdmin };

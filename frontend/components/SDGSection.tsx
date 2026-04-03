@@ -171,7 +171,7 @@ export default function SDGSection() {
   return (
     <section
       ref={ref}
-      className={`py-0.5 transition-all duration-1000 ${
+      className={`py-16 lg:py-28 transition-all duration-1000 ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
       }`}
       style={{ backgroundColor: "#F4F9F5" }}

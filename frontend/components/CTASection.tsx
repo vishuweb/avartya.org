@@ -27,8 +27,8 @@ export default function CTASection() {
   return (
     <section
       ref={sectionRef}
-      className="py-0.5 lg:py-28 transition-all duration-1000 opacity-0 translate-y-10"
-      style={{ backgroundColor: "##ECFDF5" }}
+      className="py-16 lg:py-28 transition-all duration-1000 opacity-0 translate-y-10"
+      style={{ backgroundColor: "#ECFDF5" }}
     >
       <div className="max-w-7xl mx-auto px-6">
 

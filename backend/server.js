@@ -1,35 +1,107 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 const path = require("path");
 
 const connectDB = require("./config/db");
 const volunteerRoutes = require("./routes/volunteerRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const impactRoutes = require("./routes/impactRoutes");
+const updateRoutes = require("./routes/updateRoutes");
+const campaignRoutes = require("./routes/campaignRoutes");
+const womenHelpRoutes = require("./routes/womenHelpRoutes");
+const sustainabilityRoutes = require("./routes/sustainabilityRoutes");
+const resourceRoutes = require("./routes/resourceRoutes");
+const emailRoutes = require("./routes/emailRoutes");
+const aiRoutes = require("./routes/aiRoutes");
+const { globalLimiter } = require("./middleware/rateLimiter");
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// ─── Security Headers ───────────────────────────────────────
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+}));
 
+// ─── CORS ──────────────────────────────────────────────────
+const allowedOrigins = [
+  process.env.FRONTEND_URL || "http://localhost:3000",
+  "https://avartya.org",
+  "https://www.avartya.org",
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman in dev)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS policy: origin not allowed"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
+// ─── Body Parsers ──────────────────────────────────────────
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// ─── Global Rate Limiter ───────────────────────────────────
+app.use(globalLimiter);
+
+// ─── Database Connection ───────────────────────────────────
 connectDB();
 
-// serve uploaded images
+// ─── Static Files ──────────────────────────────────────────
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// routes
+// ─── Routes ────────────────────────────────────────────────
 app.use("/api/volunteers", volunteerRoutes);
 app.use("/api/impact-stories", impactRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/updates", updateRoutes);
+app.use("/api/campaigns", campaignRoutes);
+app.use("/api/women-help", womenHelpRoutes);
+app.use("/api/sustainability", sustainabilityRoutes);
+app.use("/api/resources", resourceRoutes);
+app.use("/api/email", emailRoutes);
+app.use("/api/ai", aiRoutes);
 
+// ─── Health Check ──────────────────────────────────────────
 app.get("/", (req, res) => {
-  res.send("Avartya Backend Running");
+  res.json({
+    status: "ok",
+    message: "Avartya Backend Running",
+    version: "2.0.0",
+    timestamp: new Date().toISOString(),
+  });
 });
 
-const PORT = process.env.PORT || 5000;
+// ─── 404 Handler ──────────────────────────────────────────
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
 
+// ─── Global Error Handler ──────────────────────────────────
+app.use((err, req, res, next) => {
+  console.error(`[ERROR] ${err.stack || err.message}`);
+
+  if (err.message?.includes("CORS")) {
+    return res.status(403).json({ message: "CORS policy violation" });
+  }
+
+  res.status(err.status || 500).json({
+    message: process.env.NODE_ENV === "production"
+      ? "Internal server error"
+      : err.message || "Something went wrong",
+  });
+});
+
+// ─── Start Server ──────────────────────────────────────────
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT} [${process.env.NODE_ENV || "development"}]`);
 });
