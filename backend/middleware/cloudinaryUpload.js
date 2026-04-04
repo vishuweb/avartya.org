@@ -4,12 +4,13 @@ const cloudinary = require("../config/cloudinary");
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
+  params: async (req, file) => ({
     folder: "avartya",
-    allowed_formats: ["jpg", "png", "jpeg"],
-  },
+    allowed_formats: ["jpg", "png", "jpeg", "webp"],
+    transformation: [{ width: 1200, crop: "limit" }],
+  }),
 });
 
 const upload = multer({ storage });
 
-module.exports = upload;
+module.exports = upload;

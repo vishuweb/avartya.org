@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AIChatbot from "@/components/AIChatbot";
 
 export const metadata: Metadata = {
   title: "Avartya – Building a Sustainable and Safer Society",
@@ -45,6 +46,7 @@ export default function RootLayout({
       </head>
       <body className="font-body bg-green-50 text-gray-800 antialiased">
         {children}
+        <AIChatbot />
       </body>
     </html>
   );

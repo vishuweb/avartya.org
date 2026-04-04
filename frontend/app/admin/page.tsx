@@ -2,205 +2,216 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+type DashboardStats = {
+  volunteers: { total: number; pending: number; active: number };
+  impact: { treesPlanted: number; plasticKg: number; peopleReached: number; totalEntries: number };
+  donations: { totalRaised: number; donorCount: number };
+  updates: { total: number };
+};
+
+const StatCard = ({
+  title,
+  value,
+  sub,
+  icon,
+  color,
+  href,
+}: {
+  title: string;
+  value: string | number;
+  sub?: string;
+  icon: string;
+  color: string;
+  href: string;
+}) => (
+  <Link href={href}>
+    <div className={`bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer`}>
+      <div className="flex items-start justify-between mb-4">
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl ${color}`}>
+          {icon}
+        </div>
+        <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
+      <p className="text-sm font-medium text-gray-500">{title}</p>
+      <p className="text-3xl font-bold text-gray-900 mt-1">{value}</p>
+      {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
+    </div>
+  </Link>
+);
 
 export default function AdminDashboard() {
-  const [volunteers, setVolunteers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [filterCity, setFilterCity] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
-  const [filterMotivation, setFilterMotivation] = useState("");
-  const [total, setTotal] = useState(0);
-  const [updatingId, setUpdatingId] = useState<string | null>(null);
   const router = useRouter();
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/adminlogin");
-      return;
-    }
-    fetchVolunteers();
-  }, [search, filterCity, filterStatus, filterMotivation]);
+    if (!token) { router.push("/adminlogin"); return; }
+    fetchStats(token);
+  }, [router]);
 
-  const fetchVolunteers = async () => {
-    setLoading(true);
+  const fetchStats = async (token: string) => {
     try {
-      const token = localStorage.getItem("token");
-      const params = new URLSearchParams();
-      if (search) params.set("search", search);
-      if (filterCity) params.set("city", filterCity);
-      if (filterStatus) params.set("status", filterStatus);
-      if (filterMotivation) params.set("motivation", filterMotivation);
+      const headers = { Authorization: `Bearer ${token}` };
+      const base = process.env.NEXT_PUBLIC_API_URL;
 
-      // FIXED: use env var, response is { volunteers: [], total: N }
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/volunteers?${params}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const [volunteerRes, impactRes, donationRes, updatesRes] = await Promise.allSettled([
+        fetch(`${base}/api/volunteers?limit=1`, { headers }).then((r) => r.json()),
+        fetch(`${base}/api/impact/totals`).then((r) => r.json()),
+        fetch(`${base}/api/donations/stats`).then((r) => r.json()),
+        fetch(`${base}/api/updates/admin`, { headers }).then((r) => r.json()),
+      ]);
 
-      if (res.status === 401) {
-        router.push("/adminlogin");
-        return;
-      }
+      const v = volunteerRes.status === "fulfilled" ? volunteerRes.value : {};
+      const imp = impactRes.status === "fulfilled" ? impactRes.value : {};
+      const don = donationRes.status === "fulfilled" ? donationRes.value : {};
+      const upd = updatesRes.status === "fulfilled" ? updatesRes.value : {};
 
-      const data = await res.json();
-      // FIXED: data.volunteers is the array (not just data)
-      setVolunteers(Array.isArray(data.volunteers) ? data.volunteers : []);
-      setTotal(data.total || 0);
-    } catch (error) {
-      console.error("Fetch error:", error);
-      setVolunteers([]);
+      setStats({
+        volunteers: {
+          total: v.total ?? 0,
+          pending: 0,
+          active: 0,
+        },
+        impact: {
+          treesPlanted: imp.treesPlanted ?? 0,
+          plasticKg: imp.plasticKg ?? 0,
+          peopleReached: imp.peopleReached ?? 0,
+          totalEntries: imp.totalEntries ?? 0,
+        },
+        donations: {
+          totalRaised: don.totalRaised ?? 0,
+          donorCount: don.donorCount ?? 0,
+        },
+        updates: { total: upd.total ?? 0 },
+      });
+    } catch (err) {
+      console.error("[Dashboard stats error]", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const updateStatus = async (id: string, status: string) => {
-    setUpdatingId(id);
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/volunteers/${id}/status`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ status }),
-        }
-      );
-      if (res.ok) {
-        setVolunteers((prev) =>
-          prev.map((v) => (v._id === id ? { ...v, status } : v))
-        );
-      }
-    } catch (error) {
-      console.error("Update error:", error);
-    } finally {
-      setUpdatingId(null);
-    }
-  };
-
-  const statusColors: Record<string, string> = {
-    pending: "bg-yellow-100 text-yellow-800",
-    active: "bg-green-100 text-green-800",
-    inactive: "bg-gray-100 text-gray-600",
-  };
+  const adminName = typeof window !== "undefined" ? localStorage.getItem("adminName") || "Admin" : "Admin";
 
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Volunteers</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{total} total registered</p>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Welcome back, {adminName} 👋
+          </h1>
+          <p className="text-sm text-gray-500 mt-0.5">
+            Here's what's happening with AVARTYA today.
+          </p>
+        </div>
+        <div className="text-xs text-gray-400 bg-gray-100 px-3 py-1.5 rounded-full">
+          {new Date().toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <input
-            placeholder="🔍 Search name, email, city..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-          <input
-            placeholder="🏙️ Filter by city"
-            value={filterCity}
-            onChange={(e) => setFilterCity(e.target.value)}
-            className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
-          >
-            <option value="">All Statuses</option>
-            <option value="pending">Pending</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-          <select
-            value={filterMotivation}
-            onChange={(e) => setFilterMotivation(e.target.value)}
-            className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
-          >
-            <option value="">All Interests</option>
-            <option value="Environment Protection">Environment</option>
-            <option value="Women Safety">Women Safety</option>
-            <option value="Social Service">Social Service</option>
-            <option value="Community Development">Community</option>
-            <option value="Health Awareness">Health</option>
-          </select>
+      {loading ? (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+          {[1, 2, 3, 4].map((n) => (
+            <div key={n} className="bg-white rounded-2xl p-6 shadow-sm animate-pulse h-36">
+              <div className="w-12 h-12 bg-gray-200 rounded-xl mb-4" />
+              <div className="h-3 bg-gray-200 rounded w-2/3 mb-2" />
+              <div className="h-7 bg-gray-200 rounded w-1/2" />
+            </div>
+          ))}
         </div>
-      </div>
+      ) : (
+        <>
+          {/* Primary Stats */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <StatCard
+              title="Total Volunteers"
+              value={stats?.volunteers.total ?? 0}
+              sub="All registered"
+              icon="🌱"
+              color="bg-green-50"
+              href="/admin/volunteers"
+            />
+            <StatCard
+              title="Trees Planted"
+              value={(stats?.impact.treesPlanted ?? 0).toLocaleString("en-IN")}
+              sub={`${stats?.impact.totalEntries ?? 0} impact entries`}
+              icon="🌳"
+              color="bg-emerald-50"
+              href="/admin/impact"
+            />
+            <StatCard
+              title="Donations Raised"
+              value={`₹${(stats?.donations.totalRaised ?? 0).toLocaleString("en-IN")}`}
+              sub={`${stats?.donations.donorCount ?? 0} supporters`}
+              icon="💛"
+              color="bg-yellow-50"
+              href="/admin/donations"
+            />
+            <StatCard
+              title="News & Updates"
+              value={stats?.updates.total ?? 0}
+              sub="Published updates"
+              icon="📰"
+              color="bg-blue-50"
+              href="/admin/updates"
+            />
+          </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full" />
+          {/* Secondary Impact Row */}
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+            <StatCard
+              title="Plastic Collected"
+              value={`${(stats?.impact.plasticKg ?? 0).toLocaleString("en-IN")} kg`}
+              icon="♻️"
+              color="bg-teal-50"
+              href="/admin/impact"
+            />
+            <StatCard
+              title="People Reached"
+              value={(stats?.impact.peopleReached ?? 0).toLocaleString("en-IN")}
+              icon="👥"
+              color="bg-purple-50"
+              href="/admin/impact"
+            />
+            <StatCard
+              title="Donor Count"
+              value={stats?.donations.donorCount ?? 0}
+              sub="Total contributors"
+              icon="❤️"
+              color="bg-red-50"
+              href="/admin/donations"
+            />
           </div>
-        ) : volunteers.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">
-            <div className="text-4xl mb-3">🌱</div>
-            <p className="font-medium">No volunteers found</p>
-            <p className="text-sm mt-1">Try adjusting your filters</p>
+
+          {/* Quick Actions */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 className="text-base font-bold text-gray-800 mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              {[
+                { label: "Add Impact", href: "/admin/impact", icon: "🌿" },
+                { label: "Add Team Member", href: "/admin/team", icon: "👤" },
+                { label: "Post Update", href: "/admin/updates", icon: "📢" },
+                { label: "View Volunteers", href: "/admin/volunteers", icon: "🌱" },
+                { label: "View Donations", href: "/admin/donations", icon: "💛" },
+                { label: "Manage Campaigns", href: "/admin/campaigns", icon: "📣" },
+              ].map((action) => (
+                <Link key={action.href} href={action.href}>
+                  <div className="flex flex-col items-center gap-2 p-3 rounded-xl border border-gray-100 hover:border-green-200 hover:bg-green-50 transition-all cursor-pointer text-center">
+                    <span className="text-2xl">{action.icon}</span>
+                    <span className="text-xs font-medium text-gray-600 leading-tight">{action.label}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 text-gray-600 text-xs font-semibold uppercase tracking-wider">
-                  <th className="px-4 py-3 text-left">Name</th>
-                  <th className="px-4 py-3 text-left">Email</th>
-                  <th className="px-4 py-3 text-left hidden md:table-cell">City</th>
-                  <th className="px-4 py-3 text-left hidden lg:table-cell">Interest</th>
-                  <th className="px-4 py-3 text-left hidden lg:table-cell">Education</th>
-                  <th className="px-4 py-3 text-left">Status</th>
-                  <th className="px-4 py-3 text-left hidden sm:table-cell">Joined</th>
-                  <th className="px-4 py-3 text-left">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {volunteers.map((v: any) => (
-                  <tr key={v._id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-gray-900">{v.name}</td>
-                    <td className="px-4 py-3 text-gray-600 text-xs">{v.email}</td>
-                    <td className="px-4 py-3 text-gray-600 hidden md:table-cell">{v.city || "—"}</td>
-                    <td className="px-4 py-3 text-gray-600 hidden lg:table-cell text-xs">{v.motivation || "—"}</td>
-                    <td className="px-4 py-3 text-gray-600 hidden lg:table-cell">{v.education || "—"}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${statusColors[v.status] || statusColors.pending}`}>
-                        {v.status || "pending"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-gray-400 text-xs hidden sm:table-cell">
-                      {v.createdAt ? new Date(v.createdAt).toLocaleDateString("en-IN") : "—"}
-                    </td>
-                    <td className="px-4 py-3">
-                      <select
-                        value={v.status || "pending"}
-                        onChange={(e) => updateStatus(v._id, e.target.value)}
-                        disabled={updatingId === v._id}
-                        className="border border-gray-200 rounded-lg px-2 py-1 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50"
-                      >
-                        <option value="pending">Pending</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                      </select>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 }

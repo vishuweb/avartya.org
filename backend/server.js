@@ -15,7 +15,11 @@ const sustainabilityRoutes = require("./routes/sustainabilityRoutes");
 const resourceRoutes = require("./routes/resourceRoutes");
 const emailRoutes = require("./routes/emailRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+const impactEntryRoutes = require("./routes/impactEntryRoutes");
+const teamRoutes = require("./routes/teamRoutes");
+const donationRoutes = require("./routes/donationRoutes");
 const { globalLimiter } = require("./middleware/rateLimiter");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 const app = express();
 
@@ -69,6 +73,10 @@ app.use("/api/sustainability", sustainabilityRoutes);
 app.use("/api/resources", resourceRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/impact", impactEntryRoutes);
+app.use("/api/team", teamRoutes);
+app.use("/api/donations", donationRoutes);
+app.use("/api/payments", paymentRoutes);
 
 // ─── Health Check ──────────────────────────────────────────
 app.get("/", (req, res) => {

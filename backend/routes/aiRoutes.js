@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middleware/authMiddleware");
-const { authLimiter } = require("../middleware/rateLimiter");
+const { authLimiter, publicLimiter } = require("../middleware/rateLimiter");
 const {
   generateCampaignDescription, answerQuery, summarizeData,
 } = require("../controllers/aiController");
@@ -13,6 +13,6 @@ router.post("/generate-description", verifyToken, authLimiter, generateCampaignD
 router.post("/summarize", verifyToken, authLimiter, summarizeData);
 
 // Public query — rate limited (chatbot feature)
-router.post("/query", authLimiter, answerQuery);
+router.post("/query", publicLimiter, answerQuery);
 
 module.exports = router;

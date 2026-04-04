@@ -28,4 +28,13 @@ const formLimiter = rateLimit({
   message: { message: "Too many submissions from this IP, please try again later" },
 });
 
-module.exports = { globalLimiter, authLimiter, formLimiter };
+// ─── Public endpoint limiter (chatbot, etc.) ──────────────
+const publicLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many requests, please try again later" },
+});
+
+module.exports = { globalLimiter, authLimiter, formLimiter, publicLimiter };
