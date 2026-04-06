@@ -160,7 +160,7 @@ export default function ProgrammesSection() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="rounded-2xl bg-gray-100 animate-pulse h-72" />
             ))}
@@ -171,7 +171,7 @@ export default function ProgrammesSection() {
             <p>Campaign programmes will appear here once added via the admin panel.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
             {categories.map((cat) => (
               <ProgrammeCard key={cat} category={cat} campaigns={grouped[cat]} />
             ))}

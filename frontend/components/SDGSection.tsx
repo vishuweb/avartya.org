@@ -124,7 +124,7 @@ const SDGCard: React.FC<SDGCardProps> = ({ goal, index }) => {
 
   return (
     <article
-      className="group relative flex flex-col items-center gap-4 p-8 rounded-2xl
+      className="group relative flex flex-col items-center gap-2 sm:gap-3 p-4 sm:p-5 rounded-2xl
       transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
       style={{
         backgroundColor: bg,
@@ -133,8 +133,8 @@ const SDGCard: React.FC<SDGCardProps> = ({ goal, index }) => {
     >
       {/* Icon */}
       <div
-        className="w-16 h-16 rounded-xl flex items-center justify-center
-        transition-transform duration-500 group-hover:scale-110"
+        className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center
+        transition-transform duration-500 group-hover:scale-110 [&>svg]:w-5 [&>svg]:h-5 sm:[&>svg]:w-6 sm:[&>svg]:h-6"
         style={{ backgroundColor: goal.color, color: "white" }}
       >
         {goal.icon}
@@ -142,14 +142,14 @@ const SDGCard: React.FC<SDGCardProps> = ({ goal, index }) => {
 
       {/* Number */}
       <span
-        className="text-4xl font-extrabold tracking-tight"
+        className="text-2xl sm:text-3xl font-extrabold tracking-tight"
         style={{ color: goal.color }}
       >
         {goal.number}
       </span>
 
       {/* Title */}
-      <h3 className="text-center text-[15px] font-semibold text-gray-800 leading-snug max-w-[130px]">
+      <h3 className="text-center text-xs sm:text-sm font-semibold text-gray-800 leading-snug max-w-[100px] sm:max-w-[120px]">
         {goal.label}
       </h3>
 
