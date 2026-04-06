@@ -30,6 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       router.push("/adminlogin");
     }
     const name = localStorage.getItem("adminName");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (name) setAdminName(name);
   }, [router]);
 
