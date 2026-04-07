@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+require("dotenv").config();
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/myproject")
+  .connect(process.env.MONGO_URI)
   .then(async () => {
     const db = mongoose.connection.db;
     const salt = await bcrypt.genSalt(10);
