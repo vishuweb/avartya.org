@@ -33,6 +33,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL || "http://localhost:3000",
   "https://avartya.org",
   "https://www.avartya.org",
+  "https://avartya-org.vercel.app",
 ];
 
 app.use(cors({
