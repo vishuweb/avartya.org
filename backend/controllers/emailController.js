@@ -1,6 +1,22 @@
 const nodemailer = require("nodemailer");
 const Volunteer = require("../models/Volunteer");
 
+// Create transporter once (cached) — not on every request
+const getTransporter = () => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    throw new Error("Email credentials not configured");
+  }
+  return nodemailer.createTransport({
+    host: process.env.EMAIL_HOST || "smtp.gmail.com",
+    port: Number(process.env.EMAIL_PORT) || 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+};
+
 const sendBulkEmail = async (req, res) => {
   try {
     const { subject, body, filterCity, filterInterest } = req.body;
@@ -20,16 +36,13 @@ const sendBulkEmail = async (req, res) => {
       return res.status(404).json({ message: "No matching volunteers found" });
     }
 
-    // Configure transporter
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT),
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // Get (or fail fast on missing) transporter
+    let transporter;
+    try {
+      transporter = getTransporter();
+    } catch {
+      return res.status(503).json({ message: "Email service not configured. Please set EMAIL_USER and EMAIL_PASS in .env" });
+    }
 
     // Send emails in batches to avoid rate limits
     const batchSize = 10;

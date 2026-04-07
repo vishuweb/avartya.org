@@ -3,7 +3,7 @@ require("dotenv").config();
 const Campaign = require("./models/Campaign");
 const ImpactStory = require("./models/ImpactStory");
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/avartya";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/myproject";
 
 const seedData = async () => {
   try {

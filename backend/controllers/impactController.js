@@ -92,12 +92,22 @@ const createImpactEntry = async (req, res) => {
       return res.status(400).json({ message: "Type and count are required" });
     }
 
+    // Safely parse coordinates JSON if provided
+    let parsedCoordinates;
+    if (coordinates) {
+      try {
+        parsedCoordinates = typeof coordinates === "string" ? JSON.parse(coordinates) : coordinates;
+      } catch {
+        return res.status(400).json({ message: "Invalid coordinates format — must be valid JSON" });
+      }
+    }
+
     const entry = new ImpactEntry({
       type,
       count: Number(count),
       unit,
       location,
-      coordinates: coordinates ? JSON.parse(coordinates) : undefined,
+      coordinates: parsedCoordinates,
       proofImage: req.file?.path || undefined, // Cloudinary URL if image uploaded
       date: date || new Date(),
       addedBy: addedBy || req.admin?.email || "Admin",
@@ -119,7 +129,11 @@ const updateImpactEntry = async (req, res) => {
     const updates = { ...req.body };
     if (updates.count) updates.count = Number(updates.count);
     if (updates.coordinates && typeof updates.coordinates === "string") {
-      updates.coordinates = JSON.parse(updates.coordinates);
+      try {
+        updates.coordinates = JSON.parse(updates.coordinates);
+      } catch {
+        return res.status(400).json({ message: "Invalid coordinates format — must be valid JSON" });
+      }
     }
     const entry = await ImpactEntry.findByIdAndUpdate(
       req.params.id,

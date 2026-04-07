@@ -77,6 +77,10 @@ const verifyPayment = async (req, res) => {
       return res.status(400).json({ message: "Missing required payment verification fields" });
     }
 
+    if (!process.env.RAZORPAY_KEY_SECRET) {
+      return res.status(503).json({ message: "Payment system not configured. Please contact us directly." });
+    }
+
     // Verify HMAC signature
     const generatedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)

@@ -56,7 +56,8 @@ router.put("/:id", verifyToken, async (req, res) => {
 // Admin — delete
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
-    await SustainabilityIdea.findByIdAndDelete(req.params.id);
+    const idea = await SustainabilityIdea.findByIdAndDelete(req.params.id);
+    if (!idea) return res.status(404).json({ message: "Idea not found" });
     res.json({ message: "Deleted" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });

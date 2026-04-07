@@ -56,7 +56,8 @@ router.put("/:id", verifyToken, async (req, res) => {
 // Admin — delete
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
-    await Resource.findByIdAndDelete(req.params.id);
+    const resource = await Resource.findByIdAndDelete(req.params.id);
+    if (!resource) return res.status(404).json({ message: "Resource not found" });
     res.json({ message: "Deleted" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
