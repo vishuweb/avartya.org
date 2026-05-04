@@ -105,14 +105,11 @@ export default function Footer() {
 
           {/* Contact Info with Logo */}
           <div className="text-sm text-gray-200 space-y-3">
-            <div className="flex items-center gap-3 mb-2 opacity-80 hover:opacity-100 transition-opacity">
-              <div className="relative w-8 h-8 grayscale contrast-200 brightness-200">
-                {/* Note: Use monochrome logo here in the future (e.g., avartya-white.svg) */}
-                <img src="/avartya.png" alt="Avartya Mark" className="w-full h-full object-contain" />
+            <div className="flex items-center mb-4 opacity-80 hover:opacity-100 transition-opacity">
+              <div className="relative w-32 h-12 grayscale contrast-200 brightness-200">
+                {/* Note: Use monochrome full logo here in the future (e.g., avartya-white.svg) */}
+                <img src="/avartya.png" alt="Avartya Foundation Logo" className="w-full h-full object-contain object-left" />
               </div>
-              <p className="font-semibold text-lg tracking-wide">
-                Avartya Foundation
-              </p>
             </div>
 
             <p>

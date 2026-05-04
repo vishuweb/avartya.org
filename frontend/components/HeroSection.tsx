@@ -61,7 +61,7 @@ export default function HeroSection() {
               href="/volunteer"
               className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg text-center"
             >
-              🌱 Become a Volunteer
+              Become a Volunteer
             </Link>
             <Link
               href="/campaigns"

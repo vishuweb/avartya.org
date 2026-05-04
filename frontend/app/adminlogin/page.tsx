@@ -47,14 +47,14 @@ export default function AdminLogin() {
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
 
           {/* Header */}
-          <div className="bg-gradient-to-r from-green-700 to-emerald-600 px-8 py-10 text-center">
-            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
+          <div className="bg-white px-8 py-10 text-center border-b border-gray-100">
+            <div className="w-full flex justify-center mb-6">
+              <div className="relative w-48 h-20">
+                <img src="/avartya.png" alt="Avartya Foundation Logo" className="w-full h-full object-contain" />
+              </div>
             </div>
-            <h1 className="text-2xl font-bold text-white">Admin Portal</h1>
-            <p className="text-green-200 text-sm mt-1">Avartya Foundation</p>
+            <h1 className="text-2xl font-bold text-gray-800">Admin Portal</h1>
+            <p className="text-gray-500 text-sm mt-2">Sign in to manage operations</p>
           </div>
 
           {/* Form */}

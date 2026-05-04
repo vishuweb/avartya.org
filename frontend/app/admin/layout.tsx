@@ -65,9 +65,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Logo */}
         <div className="px-6 py-6 border-b border-green-700">
           <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-bold text-white">Avartya Admin</h2>
-              <p className="text-green-300 text-xs mt-0.5">Management Portal</p>
+            <div className="relative w-32 h-10 grayscale contrast-200 brightness-200">
+              <img src="/avartya.png" alt="Avartya Admin Logo" className="w-full h-full object-contain object-left" />
             </div>
             <button
               className="lg:hidden text-green-300 hover:text-white"

@@ -25,27 +25,21 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
 
-        {/* Logo Section implementing Brand Guidelines */}
+        {/* Logo Section */}
         <Link 
           href="/" 
           className="flex items-center gap-2 group outline-none focus-visible:ring-2 focus-visible:ring-green-600 rounded flex-shrink-0" 
           onClick={closeMobile}
         >
-          {/* Logo Mark: Always visible, subtle hover animation */}
-          <div className="relative flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
-            {/* Note: Ideally this should be the 'Simplified Icon' variant (e.g., avartya-icon.svg). Using the primary PNG for now. */}
+          {/* Using the full Avartya logo provided */}
+          <div className="relative flex items-center justify-start w-32 h-12 sm:w-40 sm:h-14 transition-transform duration-300 ease-out group-hover:scale-105">
             <Image
               src="/avartya.png"
-              alt="Avartya Foundation Logo Mark"
+              alt="Avartya Foundation Logo"
               fill
-              className="object-contain"
+              className="object-contain object-left"
             />
           </div>
-          
-          {/* Logo Text: Hidden on very small mobile devices, visible on larger screens */}
-          <span className="hidden sm:block text-lg sm:text-xl font-extrabold tracking-wide text-gray-900 group-hover:text-green-700 transition-colors duration-300">
-            Avartya Foundation
-          </span>
         </Link>
 
         {/* Desktop Menu */}
