@@ -3,19 +3,34 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 
+import {
+  DashboardSquare01Icon,
+  Plant01Icon,
+  ChartLineUp01Icon,
+  UserGroupIcon,
+  FavoriteIcon,
+  Task01Icon,
+  Notification01Icon,
+  Camera01Icon,
+  UserFemaleIcon,
+  Recycle01Icon,
+  Link01Icon,
+  Mail01Icon,
+} from "hugeicons-react";
+
 const navItems = [
-  { href: "/admin", label: "Dashboard", icon: "📊", exact: true },
-  { href: "/admin/volunteers", label: "Volunteers", icon: "🌱" },
-  { href: "/admin/impact", label: "Impact Tracker", icon: "🌿" },
-  { href: "/admin/team", label: "Team Members", icon: "👤" },
-  { href: "/admin/donations", label: "Donations", icon: "💛" },
-  { href: "/admin/updates", label: "News & Updates", icon: "📰" },
-  { href: "/admin/campaigns", label: "Campaigns", icon: "📢" },
-  { href: "/admin/impactstories", label: "Impact Stories", icon: "📸" },
-  { href: "/admin/women-help", label: "Women Help", icon: "💜" },
-  { href: "/admin/sustainability", label: "Sustainability", icon: "♻️" },
-  { href: "/admin/resources", label: "Resources", icon: "🔗" },
-  { href: "/admin/email", label: "Send Email", icon: "✉️" },
+  { href: "/admin", label: "Dashboard", icon: <DashboardSquare01Icon size={20} />, exact: true },
+  { href: "/admin/volunteers", label: "Volunteers", icon: <Plant01Icon size={20} /> },
+  { href: "/admin/impact", label: "Impact Tracker", icon: <ChartLineUp01Icon size={20} /> },
+  { href: "/admin/team", label: "Team Members", icon: <UserGroupIcon size={20} /> },
+  { href: "/admin/donations", label: "Donations", icon: <FavoriteIcon size={20} /> },
+  { href: "/admin/updates", label: "News & Updates", icon: <Task01Icon size={20} /> },
+  { href: "/admin/campaigns", label: "Campaigns", icon: <Notification01Icon size={20} /> },
+  { href: "/admin/impactstories", label: "Impact Stories", icon: <Camera01Icon size={20} /> },
+  { href: "/admin/women-help", label: "Women Help", icon: <UserFemaleIcon size={20} /> },
+  { href: "/admin/sustainability", label: "Sustainability", icon: <Recycle01Icon size={20} /> },
+  { href: "/admin/resources", label: "Resources", icon: <Link01Icon size={20} /> },
+  { href: "/admin/email", label: "Send Email", icon: <Mail01Icon size={20} /> },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -94,7 +109,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       : "text-green-100 hover:bg-white/10 hover:text-white"
                   }`}
                 >
-                  <span className="text-base">{item.icon}</span>
+                  <span className="text-white/80">{item.icon}</span>
                   {item.label}
                 </Link>
               </li>

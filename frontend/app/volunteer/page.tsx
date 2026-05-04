@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Plant01Icon } from "hugeicons-react";
 
 const educationOptions = [
   "High School", "Intermediate", "Diploma", "B.Tech", "B.Sc",
@@ -65,7 +66,9 @@ export default function VolunteerPage() {
                 <path strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">Thank You! 🌱</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-3 flex justify-center items-center gap-2">
+              Thank You! <Plant01Icon size={28} className="text-green-500" />
+            </h2>
             <p className="text-gray-600 leading-relaxed">
               Your registration has been received. The Avartya team will reach out to you soon.
               Welcome to the family!
@@ -246,7 +249,9 @@ export default function VolunteerPage() {
                     Submitting...
                   </>
                 ) : (
-                  "🌱 Join as a Volunteer"
+                  <>
+                    <Plant01Icon size={20} /> Join as a Volunteer
+                  </>
                 )}
               </button>
 

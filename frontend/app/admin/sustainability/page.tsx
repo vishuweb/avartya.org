@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Recycle01Icon } from "hugeicons-react";
 
 const CATEGORIES = ["Energy", "Water", "Waste", "Agriculture", "Transport", "Biodiversity", "Lifestyle", "Community"];
 
@@ -122,8 +123,10 @@ export default function SustainabilityAdmin() {
       {loading ? (
         <div className="text-center py-20"><div className="animate-spin w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full mx-auto" /></div>
       ) : ideas.length === 0 ? (
-        <div className="text-center py-20 text-gray-500 bg-white rounded-2xl">
-          <div className="text-4xl mb-3">♻️</div>
+        <div className="text-center py-20 text-gray-500 bg-white rounded-2xl flex flex-col items-center justify-center">
+          <div className="mb-3">
+            <Recycle01Icon size={48} className="text-green-500" />
+          </div>
           <p>No ideas yet. Add your first sustainability idea above.</p>
         </div>
       ) : (

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Plant01Icon } from "hugeicons-react";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
@@ -140,7 +141,9 @@ export default function AdminVolunteers() {
           </div>
         ) : volunteers.length === 0 ? (
           <div className="text-center py-20 text-gray-500">
-            <div className="text-4xl mb-3">🌱</div>
+            <div className="flex justify-center mb-3">
+              <Plant01Icon size={48} className="text-green-500" />
+            </div>
             <p className="font-medium">No volunteers found</p>
             <p className="text-sm mt-1">Try adjusting your filters</p>
           </div>

@@ -1,8 +1,8 @@
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
-const path = require("path");
 
 const connectDB = require("./config/db");
 const volunteerRoutes = require("./routes/volunteerRoutes");
@@ -58,6 +58,15 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(globalLimiter);
 
 // ─── Database Connection ───────────────────────────────────
+// Validate required environment variables early for clearer errors
+const requiredEnv = ["MONGO_URI", "JWT_SECRET"];
+const missingEnv = requiredEnv.filter((k) => !process.env[k]);
+if (missingEnv.length) {
+  console.error(`❌ Missing required environment variables: ${missingEnv.join(", ")}`);
+  console.error("Please set them in backend/.env or your deployment environment.");
+  process.exit(1);
+}
+
 connectDB();
 
 // ─── Static Files ──────────────────────────────────────────

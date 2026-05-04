@@ -3,6 +3,18 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import {
+  UserGroupIcon,
+  Plant01Icon,
+  FavoriteIcon,
+  Task01Icon,
+  Recycle01Icon,
+  Megaphone01Icon,
+  ChartLineUp01Icon,
+  Leaf01Icon,
+  UserAdd01Icon,
+  Tree02Icon
+} from "hugeicons-react";
 
 type DashboardStats = {
   volunteers: { total: number; pending: number; active: number };
@@ -22,14 +34,14 @@ const StatCard = ({
   title: string;
   value: string | number;
   sub?: string;
-  icon: string;
+  icon: React.ReactNode;
   color: string;
   href: string;
 }) => (
   <Link href={href}>
     <div className={`bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer`}>
       <div className="flex items-start justify-between mb-4">
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl ${color}`}>
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-green-700 ${color}`}>
           {icon}
         </div>
         <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,7 +145,7 @@ export default function AdminDashboard() {
               title="Total Volunteers"
               value={stats?.volunteers.total ?? 0}
               sub="All registered"
-              icon="🌱"
+              icon={<UserGroupIcon size={24} />}
               color="bg-green-50"
               href="/admin/volunteers"
             />
@@ -141,7 +153,7 @@ export default function AdminDashboard() {
               title="Trees Planted"
               value={(stats?.impact.treesPlanted ?? 0).toLocaleString("en-IN")}
               sub={`${stats?.impact.totalEntries ?? 0} impact entries`}
-              icon="🌳"
+              icon={<Plant01Icon size={24} />}
               color="bg-emerald-50"
               href="/admin/impact"
             />
@@ -149,7 +161,7 @@ export default function AdminDashboard() {
               title="Donations Raised"
               value={`₹${(stats?.donations.totalRaised ?? 0).toLocaleString("en-IN")}`}
               sub={`${stats?.donations.donorCount ?? 0} supporters`}
-              icon="💛"
+              icon={<FavoriteIcon size={24} className="text-yellow-600" />}
               color="bg-yellow-50"
               href="/admin/donations"
             />
@@ -157,7 +169,7 @@ export default function AdminDashboard() {
               title="News & Updates"
               value={stats?.updates.total ?? 0}
               sub="Published updates"
-              icon="📰"
+              icon={<Task01Icon size={24} className="text-blue-600" />}
               color="bg-blue-50"
               href="/admin/updates"
             />
@@ -168,14 +180,14 @@ export default function AdminDashboard() {
             <StatCard
               title="Plastic Collected"
               value={`${(stats?.impact.plasticKg ?? 0).toLocaleString("en-IN")} kg`}
-              icon="♻️"
+              icon={<Recycle01Icon size={24} className="text-teal-600" />}
               color="bg-teal-50"
               href="/admin/impact"
             />
             <StatCard
               title="People Reached"
               value={(stats?.impact.peopleReached ?? 0).toLocaleString("en-IN")}
-              icon="👥"
+              icon={<UserGroupIcon size={24} className="text-purple-600" />}
               color="bg-purple-50"
               href="/admin/impact"
             />
@@ -183,7 +195,7 @@ export default function AdminDashboard() {
               title="Donor Count"
               value={stats?.donations.donorCount ?? 0}
               sub="Total contributors"
-              icon="❤️"
+              icon={<FavoriteIcon size={24} className="text-red-500" />}
               color="bg-red-50"
               href="/admin/donations"
             />
@@ -194,16 +206,18 @@ export default function AdminDashboard() {
             <h2 className="text-base font-bold text-gray-800 mb-4">Quick Actions</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {[
-                { label: "Add Impact", href: "/admin/impact", icon: "🌿" },
-                { label: "Add Team Member", href: "/admin/team", icon: "👤" },
-                { label: "Post Update", href: "/admin/updates", icon: "📢" },
-                { label: "View Volunteers", href: "/admin/volunteers", icon: "🌱" },
-                { label: "View Donations", href: "/admin/donations", icon: "💛" },
-                { label: "Manage Campaigns", href: "/admin/campaigns", icon: "📣" },
+                { label: "Add Impact", href: "/admin/impact", icon: <Leaf01Icon size={24} className="text-green-600" /> },
+                { label: "Add Team Member", href: "/admin/team", icon: <UserAdd01Icon size={24} className="text-green-600" /> },
+                { label: "Post Update", href: "/admin/updates", icon: <Megaphone01Icon size={24} className="text-green-600" /> },
+                { label: "View Volunteers", href: "/admin/volunteers", icon: <UserGroupIcon size={24} className="text-green-600" /> },
+                { label: "View Donations", href: "/admin/donations", icon: <FavoriteIcon size={24} className="text-green-600" /> },
+                { label: "Manage Campaigns", href: "/admin/campaigns", icon: <Megaphone01Icon size={24} className="text-green-600" /> },
               ].map((action) => (
                 <Link key={action.href} href={action.href}>
                   <div className="flex flex-col items-center gap-2 p-3 rounded-xl border border-gray-100 hover:border-green-200 hover:bg-green-50 transition-all cursor-pointer text-center">
-                    <span className="text-2xl">{action.icon}</span>
+                    <div className="flex items-center justify-center p-2 rounded-full bg-green-50">
+                      {action.icon}
+                    </div>
                     <span className="text-xs font-medium text-gray-600 leading-tight">{action.label}</span>
                   </div>
                 </Link>

@@ -24,6 +24,11 @@ const loginAdmin = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    if (!process.env.JWT_SECRET) {
+      console.error("[Admin Login Error] Missing JWT_SECRET environment variable");
+      return res.status(500).json({ message: "Server misconfiguration: JWT secret missing" });
+    }
+
     const token = jwt.sign(
       { id: admin._id, email: admin.email, role: "admin" },
       process.env.JWT_SECRET,
@@ -40,7 +45,7 @@ const loginAdmin = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("[Admin Login Error]", error.message);
+    console.error("[Admin Login Error]", error.stack || error.message);
     res.status(500).json({ message: "Server error during authentication" });
   }
 };

@@ -4,6 +4,17 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
+import {
+  Building03Icon,
+  Notification01Icon,
+  Task01Icon,
+  Location01Icon,
+  UserFemaleIcon,
+  Plant01Icon,
+  HandshakeIcon,
+  Briefcase01Icon
+} from "hugeicons-react";
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -16,6 +27,17 @@ export default function Navbar() {
   }, []);
 
   const closeMobile = () => setMobileMenu(false);
+
+  const mobileNavItems = [
+    { href: "/about", label: "About Us", icon: <Building03Icon size={20} className="text-gray-500" /> },
+    { href: "/campaigns", label: "Campaigns", icon: <Notification01Icon size={20} className="text-gray-500" /> },
+    { href: "/updates", label: "Updates", icon: <Task01Icon size={20} className="text-gray-500" /> },
+    { href: "/centre", label: "Our Centres", icon: <Location01Icon size={20} className="text-gray-500" /> },
+    { href: "/women-help", label: "Women Help", icon: <UserFemaleIcon size={20} className="text-gray-500" /> },
+    { href: "/volunteer", label: "Volunteer", icon: <Plant01Icon size={20} className="text-gray-500" /> },
+    { href: "/partners", label: "Partner With Us", icon: <HandshakeIcon size={20} className="text-gray-500" /> },
+    { href: "/careers", label: "Careers", icon: <Briefcase01Icon size={20} className="text-gray-500" /> },
+  ];
 
   return (
     <nav
@@ -32,7 +54,7 @@ export default function Navbar() {
           onClick={closeMobile}
         >
           {/* Using the full Avartya logo provided */}
-          <div className="relative flex items-center justify-start w-32 h-12 sm:w-40 sm:h-14 transition-transform duration-300 ease-out group-hover:scale-105">
+          <div className="relative flex items-center justify-start w-40 h-20 sm:w-40 sm:h-14 transition-transform duration-300 ease-out group-hover:scale-105">
             <Image
               src="/avartya.png"
               alt="Avartya Foundation Logo"
@@ -103,7 +125,7 @@ export default function Navbar() {
                   className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-green-50 hover:text-green-700 transition-colors"
                   onClick={() => setOpen(false)}
                 >
-                  💼 Careers
+                Careers
                 </Link>
               </div>
             )}
@@ -115,7 +137,7 @@ export default function Navbar() {
           href="/donate"
           className="hidden md:inline-flex items-center gap-2 bg-green-600 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-green-700 transition-all hover:scale-105 shadow-sm"
         >
-          ❤️ SUPPORT US
+          SUPPORT US
         </Link>
 
         {/* Hamburger (Mobile) */}
@@ -150,23 +172,14 @@ export default function Navbar() {
         }`}
       >
         <div className="px-4 pb-6 pt-2 flex flex-col gap-1 bg-white border-t border-gray-100">
-          {[
-            { href: "/about", label: "About Us", icon: "🏛️" },
-            { href: "/campaigns", label: "Campaigns", icon: "📢" },
-            { href: "/updates", label: "Updates", icon: "📰" },
-            { href: "/centre", label: "Our Centres", icon: "📍" },
-            { href: "/women-help", label: "Women Help", icon: "💜" },
-            { href: "/volunteer", label: "Volunteer", icon: "🌱" },
-            { href: "/partners", label: "Partner With Us", icon: "🤝" },
-            { href: "/careers", label: "Careers", icon: "💼" },
-          ].map((item) => (
+          {mobileNavItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={closeMobile}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 font-medium hover:bg-green-50 hover:text-green-700 transition-colors"
             >
-              <span>{item.icon}</span>
+              <div className="w-5 h-5 flex items-center justify-center">{item.icon}</div>
               {item.label}
             </Link>
           ))}
@@ -177,7 +190,7 @@ export default function Navbar() {
               className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-3 rounded-xl text-center font-semibold hover:bg-green-700 transition-colors"
               onClick={closeMobile}
             >
-              ❤️ SUPPORT US
+              SUPPORT US
             </Link>
           </div>
         </div>
