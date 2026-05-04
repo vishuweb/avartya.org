@@ -103,12 +103,17 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="border-t border-gray-400 mt-14 pt-10 flex flex-col lg:flex-row justify-between gap-10">
 
-          {/* Contact Info */}
+          {/* Contact Info with Logo */}
           <div className="text-sm text-gray-200 space-y-3">
-
-            <p className="font-semibold text-base">
-              Avartya Foundation
-            </p>
+            <div className="flex items-center gap-3 mb-2 opacity-80 hover:opacity-100 transition-opacity">
+              <div className="relative w-8 h-8 grayscale contrast-200 brightness-200">
+                {/* Note: Use monochrome logo here in the future (e.g., avartya-white.svg) */}
+                <img src="/avartya.png" alt="Avartya Mark" className="w-full h-full object-contain" />
+              </div>
+              <p className="font-semibold text-lg tracking-wide">
+                Avartya Foundation
+              </p>
+            </div>
 
             <p>
               Gorakhpur, Uttar Pradesh, India
