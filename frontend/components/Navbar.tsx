@@ -89,14 +89,14 @@ export default function Navbar() {
                   className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-green-50 hover:text-green-700 transition-colors"
                   onClick={() => setOpen(false)}
                 >
-                  🌱 Volunteer
+                Become a Volunteer
                 </Link>
                 <Link
                   href="/partners"
                   className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-green-50 hover:text-green-700 transition-colors"
                   onClick={() => setOpen(false)}
                 >
-                  🤝 Partner With Us
+                Partner With Us
                 </Link>
                 <Link
                   href="/careers"
